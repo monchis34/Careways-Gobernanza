@@ -96,6 +96,29 @@ function ClinicalUserCourses({ t }: { t: (en: string, es: string) => string }) {
 
          <Card className="hover:shadow-md transition-shadow cursor-pointer p-0 overflow-hidden flex flex-col">
             <div className="h-32 bg-slate-100 flex items-center justify-center relative">
+               <div className="absolute top-3 left-3"><Badge variant="default" className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200">{t('Pending Exam', 'Examen Pendiente')}</Badge></div>
+               <BookOpen className="w-12 h-12 text-slate-300" />
+            </div>
+            <div className="p-5 flex-1 flex flex-col">
+               <h4 className="font-bold text-slate-800 mb-1">{t('Cardiology Fundamentals', 'Fundamentos de Cardiología')}</h4>
+               <p className="text-xs text-slate-500 mb-4 line-clamp-2">
+                 {t('Theory modules completed. Ready for the final assessment.', 'Módulos teóricos completados. Listo para la evaluación final.')}
+               </p>
+               
+               <div className="mt-auto">
+                 <div className="flex justify-between text-xs font-bold text-indigo-600 mb-1">
+                   <span>{t('Theory Progress', 'Progreso Teórico')}</span>
+                   <span>100%</span>
+                 </div>
+                 <button className="w-full mt-2 py-1.5 border border-indigo-200 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded transition-colors">
+                   {t('Take Online Exam', 'Dar Examen en Línea')}
+                 </button>
+               </div>
+            </div>
+         </Card>
+
+         <Card className="hover:shadow-md transition-shadow cursor-pointer p-0 overflow-hidden flex flex-col">
+            <div className="h-32 bg-slate-100 flex items-center justify-center relative">
                <div className="absolute top-3 left-3"><Badge variant="success">{t('Theory Completed', 'Teoría Completada')}</Badge></div>
                <BookOpen className="w-12 h-12 text-slate-300" />
             </div>
@@ -282,6 +305,61 @@ function AdminEducatorCourses({ role, t }: { role: string; t: (en: string, es: s
            <span className="text-xl font-bold text-slate-700">115</span>
          </Card>
       </div>
+
+      {/* Educator Grading Section */}
+      {role === 'EDUCATOR' && (
+        <div className="mt-8 border-t border-slate-200 pt-6">
+          <div className="flex items-center justify-between mb-4">
+             <div>
+                <h3 className="text-lg font-bold text-slate-800">{t('Pending Grading & Course Closure', 'Calificaciones Pendientes y Cierre')}</h3>
+                <p className="text-xs text-slate-500">{t('Upload grades, provide feedback, and close the course module for your assigned students.', 'Sube notas, proporciona feedback y cierra el módulo del curso para los alumnos asignados.')}</p>
+             </div>
+             <button className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded hover:bg-emerald-700 transition-colors">
+               <FileCheck className="w-4 h-4" /> 
+               {t('Upload Grades & Close', 'Subir Notas y Cerrar')}
+             </button>
+          </div>
+          
+          <Card className="overflow-hidden">
+            <table className="w-full text-sm text-left">
+               <thead className="bg-slate-50 border-b border-slate-200">
+                 <tr>
+                   <th className="py-3 px-4 font-bold text-slate-600 text-xs">{t('Student', 'Estudiante')}</th>
+                   <th className="py-3 px-4 font-bold text-slate-600 text-xs">{t('Course', 'Curso')}</th>
+                   <th className="py-3 px-4 font-bold text-slate-600 text-xs text-center">{t('Status', 'Estado')}</th>
+                   <th className="py-3 px-4 font-bold text-slate-600 text-xs text-right">{t('Action', 'Acción')}</th>
+                 </tr>
+               </thead>
+               <tbody className="divide-y divide-slate-100">
+                 <tr className="hover:bg-slate-50">
+                   <td className="py-3 px-4 font-medium text-slate-800">Maria Fernandez</td>
+                   <td className="py-3 px-4 text-slate-600">Advanced Airway Surgery</td>
+                   <td className="py-3 px-4 text-center">
+                     <span className="inline-flex items-center px-2 py-1 bg-amber-50 text-amber-700 rounded text-[10px] font-bold border border-amber-200">
+                       {t('Needs Grading', 'Requiere Calificación')}
+                     </span>
+                   </td>
+                   <td className="py-3 px-4 text-right">
+                     <button className="text-[#003366] text-xs font-bold hover:underline">{t('Grade', 'Calificar')}</button>
+                   </td>
+                 </tr>
+                 <tr className="hover:bg-slate-50">
+                   <td className="py-3 px-4 font-medium text-slate-800">Carlos Gomez</td>
+                   <td className="py-3 px-4 text-slate-600">Pediatric Sepsis 101</td>
+                   <td className="py-3 px-4 text-center">
+                     <span className="inline-flex items-center px-2 py-1 bg-emerald-50 text-emerald-700 rounded text-[10px] font-bold border border-emerald-200">
+                       {t('Graded - Ready to Close', 'Calificado - Listo para Cerrar')}
+                     </span>
+                   </td>
+                   <td className="py-3 px-4 text-right">
+                     <button className="text-emerald-600 text-xs font-bold hover:underline">{t('Close Record', 'Cerrar Registro')}</button>
+                   </td>
+                 </tr>
+               </tbody>
+            </table>
+          </Card>
+        </div>
+      )}
 
     </div>
   );
