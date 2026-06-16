@@ -24,8 +24,6 @@ const getNavItems = (role: string, lang: string) => {
     { path: '/patients', label: isES ? 'Pacientes' : 'Patients', icon: Activity, roles: ['SUPER_ADMIN', 'CHAMPION', 'DATA_ANALYST', 'CLINICAL_USER'] },
     { path: '/certifications', label: isES ? 'Certificados' : 'Certifications', icon: Award, roles: ['SUPER_ADMIN', 'CHAMPION', 'EDUCATOR', 'CLINICAL_USER'] },
     { path: '/analytics', label: isES ? 'Analítica' : 'Analytics', icon: BarChart3, roles: ['SUPER_ADMIN', 'CHAMPION', 'DATA_ANALYST', 'EDUCATOR'] },
-    { path: '/institutions', label: isES ? 'Instituciones' : 'Institutions', icon: Building2, roles: ['SUPER_ADMIN'] },
-    { path: '/audit', label: isES ? 'Auditoría' : 'Audit Center', icon: ShieldCheck, roles: ['SUPER_ADMIN', 'CHAMPION', 'DATA_ANALYST', 'EDUCATOR'] },
     { path: '/settings', label: isES ? 'Ajustes' : 'Settings', icon: Settings, roles: ['SUPER_ADMIN', 'CHAMPION', 'DATA_ANALYST', 'EDUCATOR', 'CLINICAL_USER'] },
   ];
 

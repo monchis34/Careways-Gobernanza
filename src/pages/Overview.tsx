@@ -1,6 +1,7 @@
 import { useAuth } from '../context/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Activity, Server, Database, Globe, Users, Building2, BookOpen, AppWindow, ShieldAlert, ArrowRight, UserCheck, AlertTriangle, FileCheck, Stethoscope, LineChart, BrainCircuit, ShieldCheck } from 'lucide-react';
+import { NetworkOverview } from '../components/NetworkOverview';
 
 export function Overview() {
   const { user, language } = useAuth();
@@ -60,7 +61,7 @@ export function Overview() {
         )}
       </div>
 
-      {user.role === 'SUPER_ADMIN' && <SuperAdminOverview t={t} />}
+      {user.role === 'SUPER_ADMIN' && <NetworkOverview />}
       {user.role === 'CHAMPION' && <ChampionOverview />}
       {user.role === 'DATA_ANALYST' && <DataAnalystOverview />}
       {user.role === 'EDUCATOR' && <EducatorOverview />}

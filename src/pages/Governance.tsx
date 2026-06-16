@@ -3,6 +3,14 @@ import { Card } from '../components/ui/Card';
 import { ShieldCheck, Activity, Users, AlertTriangle, HelpCircle, HardDrive, Share2, Search, ArrowRight, UserCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Badge } from '../components/ui/Badge';
+import { UserManagementCenter } from '../components/UserManagementCenter';
+import { NetworkOverview } from '../components/NetworkOverview';
+import { GovernanceOverview } from '../components/governance/GovernanceOverview';
+import { OperationsCenter } from '../components/governance/OperationsCenter';
+import { CapacityManagement } from '../components/governance/CapacityManagement';
+import { LiveSessions } from '../components/governance/LiveSessions';
+import { SlaMonitor } from '../components/governance/SlaMonitor';
+import { ComplianceCenter } from '../components/governance/ComplianceCenter';
 
 export function Governance() {
   const { user, language } = useAuth();
@@ -23,6 +31,24 @@ export function Governance() {
 
   return (
     <div className="space-y-6">
+      {/* Role Banner */}
+      <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-2 rounded flex items-center justify-between text-xs font-medium">
+        <div className="flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-amber-500" />
+          <span>
+            {isES ? (
+              <>Estás viendo la plataforma como <strong>{user.role}</strong>. Todas las acciones se ejecutan con los permisos de ese rol.</>
+            ) : (
+              <>You are viewing the platform as <strong>{user.role}</strong>. All actions run with that role's permissions.</>
+            )}
+          </span>
+        </div>
+        <button className="font-bold border border-amber-300 px-2 py-0.5 rounded hover:bg-amber-100 uppercase text-[10px] flex gap-1 items-center">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+          {isES ? 'VOLVER A MI ROL' : 'RETURN TO MY ROLE'}
+        </button>
+      </div>
+
       {/* Top Controls / Filters */}
       <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4 p-4 bg-white rounded-lg border border-slate-200">
          <div className="flex items-center gap-3 w-full xl:w-auto">
@@ -70,7 +96,7 @@ export function Governance() {
             
             <div className="flex flex-col">
                <span className="text-[9px] text-slate-400 font-bold uppercase">{t('COUNTRY', 'PAÍS')}</span>
-               <select className="border-none bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-0 w-24">
+               <select disabled={user.role === 'CHAMPION'} className="border border-transparent bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-0 w-24 disabled:opacity-50">
                   <option>All Country</option>
                </select>
             </div>
@@ -78,7 +104,7 @@ export function Governance() {
             
             <div className="flex flex-col">
                <span className="text-[9px] text-slate-400 font-bold uppercase">{t('STATE/PROVINCE', 'ESTADO/PROVINCIA')}</span>
-               <select className="border-none bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-0 w-28">
+               <select disabled={user.role === 'CHAMPION'} className="border-none bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-0 w-28 disabled:opacity-50">
                   <option>All State/Province</option>
                </select>
             </div>
@@ -86,7 +112,7 @@ export function Governance() {
 
             <div className="flex flex-col">
                <span className="text-[9px] text-slate-400 font-bold uppercase">{t('CITY', 'CIUDAD')}</span>
-               <select className="border-none bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-0 w-20">
+               <select disabled={user.role === 'CHAMPION'} className="border-none bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-0 w-20 disabled:opacity-50">
                   <option>All City</option>
                </select>
             </div>
@@ -94,12 +120,14 @@ export function Governance() {
 
             <div className="flex flex-col">
                <span className="text-[9px] text-slate-400 font-bold uppercase">{t('HOSPITAL', 'HOSPITAL')}</span>
-               <select className="border-none bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-0 w-24">
-                  <option>All Hospital</option>
+               <select disabled={user.role === 'CHAMPION'} className="border border-transparent bg-transparent text-slate-700 font-medium text-xs focus:ring-0 cursor-pointer p-1 -m-1 rounded w-32 disabled:bg-slate-50 disabled:border-slate-200">
+                  <option>{user.role === 'CHAMPION' ? user.institution || 'CareWays Testing' : 'All Hospital'}</option>
+                  {user.role !== 'CHAMPION' && <option>Hospital Alianza</option>}
+                  {user.role !== 'CHAMPION' && <option>Clínica Central</option>}
                </select>
             </div>
          </div>
-         <button className="px-4 py-1.5 text-xs font-bold border border-slate-200 text-slate-700 rounded hover:bg-slate-50 uppercase shadow-sm">
+         <button disabled={user.role === 'CHAMPION'} className="px-4 py-1.5 text-xs font-bold border border-slate-200 text-slate-700 rounded hover:bg-slate-50 uppercase shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
            {t('APPLY SCOPE', 'APLICAR ALCANCE')}
          </button>
       </div>
@@ -124,147 +152,16 @@ export function Governance() {
          })}
       </div>
 
-      {activeTab === 'OVERVIEW' && (
-        <div className="space-y-6">
-          {/* KPIs */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-5 flex flex-col justify-between">
-               <div>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tight mb-2">{t('TOTAL USERS', 'USUARIOS TOTALES')}</p>
-                  <div className="text-3xl font-black text-[#003366]">4,892</div>
-               </div>
-               <p className="text-emerald-500 text-xs font-bold mt-4">+12 <span className="text-slate-400 font-medium">{t('pending approvals', 'aprobaciones pendientes')}</span></p>
-            </Card>
-            
-            <Card className="p-5 flex flex-col justify-between">
-               <div>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tight mb-2">{t('ACTIVE INSTITUTIONS', 'INSTITUCIONES ACTIVAS')}</p>
-                  <div className="text-3xl font-black text-[#003366]">43</div>
-               </div>
-               <p className="text-[#003366] text-xs font-bold mt-4">2 <span className="text-slate-400 font-medium">{t('suspended currently', 'suspendidas actualmente')}</span></p>
-            </Card>
-
-            <Card className="p-5 flex flex-col justify-between">
-               <div>
-                  <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tight mb-2">{t('CLINICAL REGISTRIES', 'REGISTROS CLÍNICOS')}</p>
-                  <div className="text-3xl font-black text-[#003366]">18.4K</div>
-               </div>
-               <p className="text-emerald-500 text-xs font-bold mt-4">+5% <span className="text-slate-400 font-medium">{t('processed this week', 'procesados esta semana')}</span></p>
-            </Card>
-
-            <Card className="p-5 flex flex-col justify-between border-l-4 border-l-red-500">
-               <div>
-                  <p className="text-red-500 text-[10px] font-bold uppercase tracking-tight mb-2">{t('CRITICAL EVENTS', 'EVENTOS CRÍTICOS')}</p>
-                  <div className="text-3xl font-black text-red-500">7</div>
-               </div>
-               <p className="text-red-500 text-xs font-bold mt-4">{t('Action Required', 'Acción Requerida')}</p>
-            </Card>
-          </div>
-
-          {/* Security & Access / Ecosystem Activity */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-             {/* Security & Access */}
-             <div>
-                <div className="flex items-center justify-between mb-4">
-                   <h3 className="text-sm font-bold text-slate-700 uppercase">{t('SECURITY & ACCESS', 'SEGURIDAD Y ACCESO')}</h3>
-                   <button className="text-[#003366] text-xs font-bold hover:underline flex items-center gap-1">
-                     {t('View Audit Log', 'Ver Log de Auditoría')} <ArrowRight className="w-3 h-3" />
-                   </button>
-                </div>
-                <table className="w-full text-sm text-left border-t border-slate-100">
-                   <thead>
-                     <tr className="border-b border-slate-100">
-                       <th className="py-2 text-[10px] font-bold text-slate-400 uppercase">{t('METRIC', 'MÉTRICA')}</th>
-                       <th className="py-2 text-[10px] font-bold text-slate-400 uppercase text-right">{t('VALUE', 'VALOR')}</th>
-                     </tr>
-                   </thead>
-                   <tbody className="divide-y divide-slate-50/50">
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('Active Sessions', 'Sesiones Activas')}</td>
-                       <td className="py-3 text-right font-bold text-slate-800">1,204</td>
-                     </tr>
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('Failed Access Attempts (24h)', 'Intentos Fallidos (24h)')}</td>
-                       <td className="py-3 text-right font-bold text-amber-500">86</td>
-                     </tr>
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('Suspended Accounts', 'Cuentas Suspendidas')}</td>
-                       <td className="py-3 text-right font-bold text-red-500">14</td>
-                     </tr>
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('Temporary Delegations', 'Delegaciones Temporales')}</td>
-                       <td className="py-3 text-right font-bold text-blue-500">3</td>
-                     </tr>
-                   </tbody>
-                </table>
-             </div>
-
-             {/* Ecosystem Activity */}
-             <div>
-                <div className="flex items-center justify-between mb-4">
-                   <h3 className="text-sm font-bold text-slate-700 uppercase">{t('ECOSYSTEM ACTIVITY', 'ACTIVIDAD DEL ECOSISTEMA')}</h3>
-                   <button className="text-[#003366] text-xs font-bold hover:underline flex items-center gap-1">
-                     {t('View All Metrics', 'Ver Todas las Métricas')} <ArrowRight className="w-3 h-3" />
-                   </button>
-                </div>
-                <table className="w-full text-sm text-left border-t border-slate-100">
-                   <thead>
-                     <tr className="border-b border-slate-100">
-                       <th className="py-2 text-[10px] font-bold text-slate-400 uppercase">{t('METRIC', 'MÉTRICA')}</th>
-                       <th className="py-2 text-[10px] font-bold text-slate-400 uppercase text-right">{t('VALUE', 'VALOR')}</th>
-                     </tr>
-                   </thead>
-                   <tbody className="divide-y divide-slate-50/50">
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('Active Courses', 'Cursos Activos')}</td>
-                       <td className="py-3 text-right font-bold text-slate-800">124</td>
-                     </tr>
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('Tele-sim Events (Month)', 'Eventos Telesim (Mes)')}</td>
-                       <td className="py-3 text-right font-bold text-slate-800">89</td>
-                     </tr>
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('Open Support Tickets', 'Tickets de Soporte Abiertos')}</td>
-                       <td className="py-3 text-right font-bold text-amber-500">22</td>
-                     </tr>
-                     <tr>
-                       <td className="py-3 font-medium text-slate-600">{t('SLA Breaches', 'Incumplimientos SLA')}</td>
-                       <td className="py-3 text-right font-bold text-red-500">2</td>
-                     </tr>
-                   </tbody>
-                </table>
-             </div>
-          </div>
-
-          {/* Health Monitor Section */}
-          <h3 className="text-sm font-bold text-slate-700 uppercase mt-8 border-b border-slate-200 pb-2">{t('INSTITUTION HEALTH MONITOR', 'MONITOR SALUD INST.')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
-            <Card className="p-4 flex flex-col justify-between">
-               <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tight mb-2">{t('TOTAL INSTITUTIONS', 'TOTAL INSTITUCIONES')}</p>
-               <div className="text-2xl font-black text-[#003366]">43</div>
-               <p className="text-[#003366] text-xs mt-2 font-medium">12 {t('pending approvals', 'aprob. pendientes')}</p>
-            </Card>
-            <Card className="p-4 flex flex-col justify-between border-l-4 border-l-emerald-500">
-               <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tight mb-2">{t('HEALTHY INSTITUTIONS', 'INSTITUCIONES SANAS')}</p>
-               <div className="text-2xl font-black text-[#003366]">38</div>
-               <p className="text-emerald-500 text-xs mt-2 font-medium">5 {t('require attention', 'req. atención')}</p>
-            </Card>
-            <Card className="p-4 flex flex-col justify-between border-l-4 border-l-amber-500">
-               <p className="text-slate-400 text-[10px] font-bold uppercase tracking-tight mb-2">{t('RISK FLAGGED', 'EN RIESGO')}</p>
-               <div className="text-2xl font-black text-[#003366]">4</div>
-               <p className="text-amber-500 text-xs mt-2 font-medium">{t('Missing key personnel', 'Falta personal clave')}</p>
-            </Card>
-            <Card className="p-4 flex flex-col justify-between border-l-4 border-l-red-500">
-               <p className="text-red-500 text-[10px] font-bold uppercase tracking-tight mb-2">{t('SUSPENDED', 'SUSPENDIDAS')}</p>
-               <div className="text-2xl font-black text-red-500">1</div>
-               <p className="text-red-500 text-xs mt-2 font-medium bg-red-50 px-2 py-0.5 rounded-full self-start">{t('Action Required', 'Acción Requerida')}</p>
-            </Card>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'RACI' && <RaciTab t={t} />}
-
+      <div className="pt-2">
+         {activeTab === 'OVERVIEW' && <GovernanceOverview t={t} />}
+         {activeTab === 'USER_MGMT' && <UserManagementCenter t={t} />}
+         {activeTab === 'OPERATIONS' && <OperationsCenter t={t} />}
+         {activeTab === 'CAPACITY' && <CapacityManagement t={t} />}
+         {activeTab === 'LIVE_SESSIONS' && <LiveSessions t={t} />}
+         {activeTab === 'RACI' && <RaciTab t={t} />}
+         {activeTab === 'SLA_MONITOR' && <SlaMonitor t={t} />}
+         {activeTab === 'COMPLIANCE' && <ComplianceCenter t={t} />}
+      </div>
     </div>
   );
 }
